@@ -1,0 +1,14 @@
+<RCC>
+
+<qresource prefix="Images">
+	<file alias="New">Images/New.png</file>
+	<file alias="Open">Images/Open.png</file>
+	<file alias="Save">Images/Save.png</file>
+	<file alias="SaveAs">Images/SaveAs.png</file>
+
+	<file alias="Add">Images/Add.png</file>
+	<file alias="Remove">Images/Remove.png</file>
+	<file alias="Clear">Images/Clear.png</file>
+</qresource>
+
+</RCC>
