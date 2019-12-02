@@ -6,6 +6,7 @@
 #include <GXLib/Math/Matrix.h>
 #include <GXQt/System/Input/InputSystem.h>
 #include <GXQt/Utility/WidgetState/WidgetState.h>
+#include <GXQt/Core/Resource.h>
 #include <TransformVisualizer/Core/Transform/Transform.h>
 #include <TransformVisualizer/Core/Transform/TransformContainer.h>
 #include <TransformVisualizer/Core/State.h>
@@ -103,17 +104,17 @@ namespace TransformVisualizer
 		
 		// Menu.
 		auto menu_file = menuBar()->addMenu("File");
-		menu_file->addAction(QIcon{":/Images/New"}, "New Configuration", this, &MainWindow::slot_menu_file_new);
-		menu_file->addAction(QIcon{":/Images/Open"}, "Open Configuration...", this, &MainWindow::slot_menu_file_open);
-		menu_file->addAction(QIcon{":/Images/Save"}, "Save Configuration", this, &MainWindow::slot_menu_file_save);
-		menu_file->addAction(QIcon{":/Images/SaveAs"}, "Save Configuration As...", this, &MainWindow::slot_menu_file_save_as);
+		menu_file->addAction(GX::QT::RC::icon(GX::QT::RC::Image::FileNew), "New Configuration", this, &MainWindow::slot_menu_file_new);
+		menu_file->addAction(GX::QT::RC::icon(GX::QT::RC::Image::FileOpen), "Open Configuration...", this, &MainWindow::slot_menu_file_open);
+		menu_file->addAction(GX::QT::RC::icon(GX::QT::RC::Image::FileSave), "Save Configuration", this, &MainWindow::slot_menu_file_save);
+		menu_file->addAction(GX::QT::RC::icon(GX::QT::RC::Image::FileSaveAs), "Save Configuration As...", this, &MainWindow::slot_menu_file_save_as);
 		menu_file->addSeparator();
 		menu_file->addAction("Exit", this, &MainWindow::close);
-
+		
 		auto menu_transform = menuBar()->addMenu("Transform");
-		menu_transform->addAction(QIcon{":/Images/Add"}, "Add Transform", this, &MainWindow::slot_menu_transform_add);
-		menu_transform->addAction(QIcon{":/Images/Remove"}, "Remove Transforms", this, &MainWindow::slot_menu_transform_remove);
-		menu_transform->addAction(QIcon{":/Images/Clear"}, "Clear Transforms", this, &MainWindow::slot_menu_transform_clear);
+		menu_transform->addAction(GX::QT::RC::icon(GX::QT::RC::Image::Add), "Add Transform", this, &MainWindow::slot_menu_transform_add);
+		menu_transform->addAction(GX::QT::RC::icon(GX::QT::RC::Image::Remove), "Remove Transforms", this, &MainWindow::slot_menu_transform_remove);
+		menu_transform->addAction(GX::QT::RC::icon(GX::QT::RC::Image::Clear), "Clear Transforms", this, &MainWindow::slot_menu_transform_clear);
 		
 		auto menu_help = menuBar()->addMenu("Help");
 		menu_help->addAction("About...", this, &MainWindow::slot_menu_help_about);
@@ -124,14 +125,14 @@ namespace TransformVisualizer
 		toolbar->setMovable(false);
 		addToolBar(Qt::TopToolBarArea, toolbar);
 
-		toolbar->addAction(QIcon{":/Images/New"}, "New Configuration", this, &MainWindow::slot_menu_file_new);
-		toolbar->addAction(QIcon{":/Images/Open"}, "Open Configuration...", this, &MainWindow::slot_menu_file_open);
-		toolbar->addAction(QIcon{":/Images/Save"}, "Save Configuration", this, &MainWindow::slot_menu_file_save);
-		toolbar->addAction(QIcon{":/Images/SaveAs"}, "Save Configuration As...", this, &MainWindow::slot_menu_file_save_as);
+		toolbar->addAction(GX::QT::RC::icon(GX::QT::RC::Image::FileNew), "New Configuration", this, &MainWindow::slot_menu_file_new);
+		toolbar->addAction(GX::QT::RC::icon(GX::QT::RC::Image::FileOpen), "Open Configuration...", this, &MainWindow::slot_menu_file_open);
+		toolbar->addAction(GX::QT::RC::icon(GX::QT::RC::Image::FileSave), "Save Configuration", this, &MainWindow::slot_menu_file_save);
+		toolbar->addAction(GX::QT::RC::icon(GX::QT::RC::Image::FileSaveAs), "Save Configuration As...", this, &MainWindow::slot_menu_file_save_as);
 		toolbar->addSeparator();
-		toolbar->addAction(QIcon{":/Images/Add"}, "Add Transform", this, &MainWindow::slot_menu_transform_add);
-		toolbar->addAction(QIcon{":/Images/Remove"}, "Remove Transforms", this, &MainWindow::slot_menu_transform_remove);
-		toolbar->addAction(QIcon{":/Images/Clear"}, "Clear Transforms", this, &MainWindow::slot_menu_transform_clear);
+		toolbar->addAction(GX::QT::RC::icon(GX::QT::RC::Image::Add), "Add Transform", this, &MainWindow::slot_menu_transform_add);
+		toolbar->addAction(GX::QT::RC::icon(GX::QT::RC::Image::Remove), "Remove Transforms", this, &MainWindow::slot_menu_transform_remove);
+		toolbar->addAction(GX::QT::RC::icon(GX::QT::RC::Image::Clear), "Clear Transforms", this, &MainWindow::slot_menu_transform_clear);
 
 		// Status bar.
 		m->status_label = new QLabel{};

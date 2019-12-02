@@ -374,7 +374,55 @@ namespace GX::QT
 		assert(m_handlers.contains(&handler));
 		m_handlers.removeOne(&handler);
 	}
-	
+}
+
+namespace GX::QT
+{
+	//-----------------------------------------------------------------------------------------------------
+	// Construction & Destruction
+	//-----------------------------------------------------------------------------------------------------
+
+	template <class T, class U>
+	ListPtrContainerSearchable<T, U>::ListPtrContainerSearchable(const SearchCallback& search_callback)
+		//: ListPtrContainer {}
+		: m_search_callback {search_callback}
+	{
+	}
+
+	template <class T, class U>
+	ListPtrContainerSearchable<T, U>::ListPtrContainerSearchable(const SearchCallback& search_callback, CommandController command_controller)
+		: ListPtrContainer {command_controller}
+		, m_search_callback {search_callback}
+	{
+	}
+
+	//-----------------------------------------------------------------------------------------------------
+	// Searching
+	//-----------------------------------------------------------------------------------------------------
+
+	template <class T, class U>
+	typename ListPtrContainerSearchable<T, U>::EntryPtr ListPtrContainerSearchable<T, U>::find(const U& value)
+	{
+		const auto it = std::find_if(begin(), end(), [this, &value] (auto&& entry)
+		{
+			return m_search_callback.equals(*entry, value);
+		});
+		return (it != end() ? *it : nullptr);
+	}
+
+	template <class T, class U>
+	typename ListPtrContainerSearchable<T, U>::EntryCPtr ListPtrContainerSearchable<T, U>::find(const U& value) const
+	{
+		const auto it = std::find_if(begin(), end(), [this, &value] (auto&& entry)
+		{
+			return m_search_callback.equals(*entry, value);
+		});
+		return (it != end() ? *it : nullptr);
+	}
+}
+
+namespace GX::QT
+{	
 	//-----------------------------------------------------------------------------------------------------
 	// ListPtrContainerEventHandler
 	//-----------------------------------------------------------------------------------------------------

@@ -7,12 +7,76 @@ namespace GX::QT
 	// Input Triggers
 	//-----------------------------------------------------------------------------------------------------
 
+	QString InputNone::to_string() const
+	{
+		return QString{};
+	}
+
+	bool InputNone::operator==(const InputNone& /*rhs*/) const
+	{
+		return true;
+	}
+
+	//-----------------------------------------------------------------------------------------------------
+
+	QString InputKeyboardKey::to_string() const
+	{
+		static const QHash<int, QString> s_map
+		{
+			{ Qt::Key_Shift,	"Shift" },
+			{ Qt::Key_Control,	"Ctrl"	},
+			{ Qt::Key_Alt,		"Alt"	},
+			{ Qt::Key_Meta,		"Win"	}
+		};
+
+		const auto it = s_map.find(key);
+		return (it != s_map.end() ? *it : QKeySequence{key}.toString());
+	}
+
 	bool InputKeyboardKey::operator==(const InputKeyboardKey& rhs) const
 	{
 		return (key == rhs.key);
 	}
 
 	//-----------------------------------------------------------------------------------------------------
+
+	QString InputMouseButton::to_string() const
+	{
+		static const QHash<int, QString> s_map
+		{
+			{ Qt::LeftButton,		"LeftButton"	},
+			{ Qt::RightButton,		"RightButton"	},
+			{ Qt::MiddleButton,		"MiddleButton"	},
+			{ Qt::BackButton,		"BackButton"	},
+			{ Qt::ForwardButton,	"ForwardButton" },
+			{ Qt::TaskButton,		"TaskButton"	},
+			{ Qt::LeftButton,		"LeftButton"	},
+			{ Qt::ExtraButton4,		"ExtraButton4"	},
+			{ Qt::ExtraButton5,		"ExtraButton5"	},
+			{ Qt::ExtraButton6,		"ExtraButton6"	},
+			{ Qt::ExtraButton7,		"ExtraButton7"	},
+			{ Qt::ExtraButton8,		"ExtraButton8"	},
+			{ Qt::ExtraButton9,		"ExtraButton9"	},
+			{ Qt::ExtraButton10,	"ExtraButton10"	},
+			{ Qt::ExtraButton11,	"ExtraButton11"	},
+			{ Qt::ExtraButton12,	"ExtraButton12"	},
+			{ Qt::ExtraButton13,	"ExtraButton13"	},
+			{ Qt::ExtraButton14,	"ExtraButton14"	},
+			{ Qt::ExtraButton15,	"ExtraButton15"	},
+			{ Qt::ExtraButton16,	"ExtraButton16"	},
+			{ Qt::ExtraButton17,	"ExtraButton17"	},
+			{ Qt::ExtraButton18,	"ExtraButton18"	},
+			{ Qt::ExtraButton19,	"ExtraButton19"	},
+			{ Qt::ExtraButton20,	"ExtraButton20"	},
+			{ Qt::ExtraButton21,	"ExtraButton21"	},
+			{ Qt::ExtraButton22,	"ExtraButton22"	},
+			{ Qt::ExtraButton23,	"ExtraButton23"	},
+			{ Qt::ExtraButton24,	"ExtraButton24"	}
+		};
+
+		const auto it = s_map.find(button);
+		return (it != s_map.end() ? *it : QString{});
+	}
 
 	bool InputMouseButton::operator==(const InputMouseButton& rhs) const
 	{
@@ -21,12 +85,22 @@ namespace GX::QT
 
 	//-----------------------------------------------------------------------------------------------------
 
+	QString InputMouseMove::to_string() const
+	{
+		return "MouseMove";
+	}
+
 	bool InputMouseMove::operator==(const InputMouseMove& /*rhs*/) const
 	{
 		return true;
 	}
 
 	//-----------------------------------------------------------------------------------------------------
+
+	QString InputMouseWheel::to_string() const
+	{
+		return "MouseWheel";
+	}
 
 	bool InputMouseWheel::operator==(const InputMouseWheel& /*rhs*/) const
 	{
@@ -56,7 +130,7 @@ namespace GX::QT
 	{
 	}
 
-	InputTrigger::InputTrigger(const QVector<InputData>& modifiers, InputData trigger, InputTriggerType type)
+	InputTrigger::InputTrigger(const InputDataList& modifiers, InputData trigger, InputTriggerType type)
 		: modifiers {modifiers}
 		, trigger {trigger}
 		, type {type}

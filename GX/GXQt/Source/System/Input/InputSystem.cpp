@@ -5,6 +5,9 @@
 #include <GXLib/StdExt/VariantIndex.h>
 #include <GXQt/Utility/Object.h>
 
+// Stdlib Includes
+#include <unordered_map>
+
 // Third-Party Includes
 #include <QApplication>
 #include <QKeyEvent>
@@ -23,7 +26,15 @@ namespace GX::QT
 
 	struct InputSystem::Internal
 	{
+		using TriggerIndexMap = std::unordered_map<InputTrigger, QVector<int>>;
+		using PollIndexMap = QHash<int, int>;
+
 		QVector<InputBinding>	bindings;
+		InputConfigContainer	configurations;
+
+		TriggerIndexMap			triggers_to_indices;
+		PollIndexMap			poll_ids_to_indices;
+
 		QSet<int>				bindings_enabled;
 		QSet<int>				key_state;
 		QSet<int>				button_state;
@@ -75,6 +86,8 @@ namespace GX::QT
 		binding.receiver = receiver;
 		binding.poll_id = poll_id;
 		m->bindings.push_back(binding);
+
+		cache_bindings();
 	}
 
 	void InputSystem::bind(const InputTrigger& trigger, QObject* receiver, const InputCallback& callback)
@@ -84,6 +97,8 @@ namespace GX::QT
 		binding.receiver = receiver;
 		binding.callback = callback;
 		m->bindings.push_back(binding);
+
+		cache_bindings();
 	}
 
 	//-----------------------------------------------------------------------------------------------------
@@ -194,17 +209,30 @@ namespace GX::QT
 	// Helpers
 	//-----------------------------------------------------------------------------------------------------
 
-	bool InputSystem::enable_binding(const QVector<InputData>& modifiers, const InputData& trigger)
+	bool InputSystem::enable_binding(const InputDataList& modifiers, const InputData& trigger)
 	{
-		QVector<const InputBinding*> candidates;
+		QVector<int> candidates;
 
-		for (const auto& binding : m->bindings)
+		const auto it = std::find_if(m->triggers_to_indices.begin(), m->triggers_to_indices.end(), [&modifiers, &trigger] (auto&& p)
 		{
-			const bool match = (qHash(binding.trigger.modifiers) == qHash(modifiers) && binding.trigger.trigger == trigger && binding.trigger.type == InputTriggerType::OnEnabled);
+			return (std::hash<InputTrigger>{}(p.first) == std::hash<InputTrigger>{}(InputTrigger{modifiers, trigger}));
+		});
 
-			if (match && (binding.receiver == nullptr || object_or_child_has_focus(binding.receiver)))
+		if (it != m->triggers_to_indices.end())
+		{
+			for (int index : it->second)
 			{
-				candidates.push_back(&binding);
+				const auto& binding = m->bindings[index];
+
+				if (binding.receiver == nullptr || object_or_child_has_focus(binding.receiver))
+				{
+					candidates.push_back(index);
+
+					if (it->first.type == InputTriggerType::OnDisabled)
+					{
+						m->bindings_enabled.insert(index);
+					}
+				}
 			}
 		}
 
@@ -213,13 +241,15 @@ namespace GX::QT
 			return false;
 		}
 
-		QVector<const InputBinding*> candidates_final;
+		QVector<int> candidates_final;
 
-		std::copy_if(candidates.begin(), candidates.end(), std::back_inserter(candidates_final), [&candidates] (auto&& candidate_a)
+		std::copy_if(candidates.begin(), candidates.end(), std::back_inserter(candidates_final), [this, &candidates] (auto&& index_a)
 		{
-			return std::all_of(candidates.begin(), candidates.end(), [&candidate_a] (auto&& candidate_b)
+			const auto& candidate_a = m->bindings[index_a];
+			return std::all_of(candidates.begin(), candidates.end(), [this, &candidate_a] (auto&& index_b)
 			{
-				return (candidate_a->receiver == candidate_b->receiver || !is_ancestor_of(candidate_a->receiver, candidate_b->receiver));
+				const auto& candidate_b = m->bindings[index_b];
+				return (candidate_a.receiver == candidate_b.receiver || !is_ancestor_of(candidate_a.receiver, candidate_b.receiver));
 			});
 		});
 
@@ -228,7 +258,7 @@ namespace GX::QT
 			return false;
 		}
 
-		const auto& binding = *candidates_final[0];
+		const auto& binding = m->bindings[candidates_final[0]];
 
 		if (binding.receiver != nullptr && binding.receiver->isWidgetType())
 		{
@@ -238,11 +268,6 @@ namespace GX::QT
 			{
 				return false;
 			}
-		}
-
-		if (binding.poll_id >= 0)
-		{
-			m->bindings_enabled.insert(binding.poll_id);
 		}
 		
 		if (is_variant<TriggerInputCallback>(binding.callback))
@@ -284,31 +309,61 @@ namespace GX::QT
 			std::get<MouseWheelInputCallback>(binding.callback)(parameters);
 		}
 
+		m->bindings_enabled.insert(candidates_final[0]);
+
 		return true;
 	}
 
 	void InputSystem::disable_binding(const InputData& data)
 	{
-		for (const auto& binding : m->bindings)
+		for (auto it = m->triggers_to_indices.begin(); it != m->triggers_to_indices.end(); ++it)
 		{
-			if (binding.poll_id != -1 && binding.trigger.modifiers.contains(data) || binding.trigger.trigger == data)
+			if ((it->first.modifiers.contains(data) || it->first.trigger == data))
 			{
-				if (is_variant<TriggerInputCallback>(binding.callback))
+				for (int index : it->second)
 				{
-					if (binding.trigger.type == InputTriggerType::OnDisabled)
+					const auto enabled_it = m->bindings_enabled.find(index);
+					
+					if (enabled_it != m->bindings_enabled.end())
 					{
-						std::get<TriggerInputCallback>(binding.callback)();
+						m->bindings_enabled.erase(enabled_it);
+
+						if (it->first.type == InputTriggerType::OnDisabled)
+						{
+							const auto& binding = m->bindings[index];
+
+							if (is_variant<TriggerInputCallback>(binding.callback))
+							{
+								std::get<TriggerInputCallback>(binding.callback)();
+							}
+						}
 					}
 				}
-
-				m->bindings_enabled.remove(binding.poll_id);
 			}
 		}
 	}
 
-	QVector<InputData> InputSystem::get_modifiers() const
+	void InputSystem::cache_bindings()
 	{
-		QVector<InputData> modifiers;
+		// TODO
+
+		m->triggers_to_indices.clear();
+		m->poll_ids_to_indices.clear();
+
+		for (int i = 0; i < m->bindings.size(); ++i)
+		{
+			m->triggers_to_indices[m->bindings[i].trigger].push_back(i);
+
+			if (m->bindings[i].poll_id >= 0)
+			{
+				m->poll_ids_to_indices.insert(m->bindings[i].poll_id, i);
+			}
+		}
+	}
+
+	InputDataList InputSystem::get_modifiers() const
+	{
+		InputDataList modifiers;
 		modifiers.reserve(m->key_state.size() + m->button_state.size());
 		
 		for (auto key : m->key_state)

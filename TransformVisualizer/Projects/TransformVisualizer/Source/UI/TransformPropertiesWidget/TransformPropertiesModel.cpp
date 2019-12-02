@@ -354,7 +354,7 @@ namespace TransformVisualizer
 	//-----------------------------------------------------------------------------------------------------
 	// Transform Slots
 	//-----------------------------------------------------------------------------------------------------
-
+	
 	void TransformPropertiesModel::slot_matrix_changed(const GX::Matrix& /*matrix*/)
 	{
 		if (!m->use_components)

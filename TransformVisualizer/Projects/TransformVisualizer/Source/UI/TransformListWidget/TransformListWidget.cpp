@@ -3,6 +3,7 @@
 
 // Project Includes
 #include <GXLib/Math/Matrix.h>
+#include <GXQt/Core/Resource.h>
 #include <GXQt/MVC/ModelData/ModelDataUtility.h>
 #include <GXQt/MVC/ViewUtility.h>
 #include <GXQt/System/Input/InputSystem.h>
@@ -103,15 +104,15 @@ namespace TransformVisualizer
 	{
 		QMenu menu(this);
 
-		menu.addAction(QIcon{":/Images/Add"}, "Add", this, &TransformListWidget::slot_add);
+		menu.addAction(GX::QT::RC::icon(GX::QT::RC::Image::Add), "Add", this, &TransformListWidget::slot_add);
 
 		const auto selected_indices = GX::QT::selected_rows(*m->view);
 		if (!selected_indices.isEmpty())
 		{
-			menu.addAction(QIcon{":/Images/Remove"}, "Remove", this, &TransformListWidget::slot_remove);
+			menu.addAction(GX::QT::RC::icon(GX::QT::RC::Image::Remove), "Remove", this, &TransformListWidget::slot_remove);
 		}
 
-		menu.addAction(QIcon{":/Images/Clear"}, "Clear", this, &TransformListWidget::slot_clear);
+		menu.addAction(GX::QT::RC::icon(GX::QT::RC::Image::Clear), "Clear", this, &TransformListWidget::slot_clear);
 
 		menu.exec(QCursor::pos());
 	}

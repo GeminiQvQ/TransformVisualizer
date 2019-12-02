@@ -176,17 +176,17 @@ namespace TransformVisualizer
 	{
 		auto& camera = m->kernel_interface.state().camera();
 		
-		camera.rotate_cw_around_target((parameters.pos - parameters.pos_prev).x() * 0.04f);
-		camera.rotate_up_around_target((parameters.pos - parameters.pos_prev).y() * -0.04f);
+		camera.rotate_cw_around_target((parameters.pos - parameters.pos_prev).x() * 0.12f);
+		camera.rotate_up_around_target((parameters.pos - parameters.pos_prev).y() * -0.12f);
 	}
 
 	void RenderWidget::on_mouse_rb_move(const GX::QT::MouseMoveInputParameters& parameters)
 	{
 		auto& camera = m->kernel_interface.state().camera();
 		
-		const auto delta_x = (parameters.pos.x() - parameters.pos_prev.x()) * (camera.position() - camera.target()).length() * 0.0002f;
+		const auto delta_x = (parameters.pos.x() - parameters.pos_prev.x()) * (camera.position() - camera.target()).length() * 0.0008f;
 		camera.move_left(delta_x);
-		const auto delta_y = (parameters.pos.y() - parameters.pos_prev.y()) * (camera.position() - camera.target()).length() * 0.0002f;
+		const auto delta_y = (parameters.pos.y() - parameters.pos_prev.y()) * (camera.position() - camera.target()).length() * 0.0008f;
 		camera.move_up(delta_y);
 	}
 
@@ -201,7 +201,7 @@ namespace TransformVisualizer
 
 		auto& camera = m->kernel_interface.state().camera();
 		
-		camera.move_forward(parameters.delta * 0.0005f);
+		camera.move_forward(parameters.delta * -0.001f);
 	}
 
 	void RenderWidget::on_mouse_wheel_end()
