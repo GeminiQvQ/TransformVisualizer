@@ -97,10 +97,21 @@ namespace TransformVisualizer
 	void TransformContainer::on_to_be_reset(const QVector<SPtr<Transform>>& /*entries*/)
 	{
 		emit signal_to_be_reset();
+
+		for (const auto& entry : *this)
+		{
+			entry->disconnect(this);
+		}
 	}
 
 	void TransformContainer::on_reset(const QVector<SPtr<Transform>>& /*entries*/)
 	{
+		for (const auto& entry : *this)
+		{
+			connect(entry.get(), &Transform::signal_matrix_changed, this, &TransformContainer::update_world_transform);
+			connect(entry.get(), &Transform::signal_enabled_changed, this, &TransformContainer::update_world_transform);
+		}
+
 		update_world_transform();
 		emit signal_reset();
 	}

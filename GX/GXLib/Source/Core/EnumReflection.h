@@ -35,6 +35,9 @@ namespace GX
 #define DEF_ENUM_REFLECTION(Type) \
 	DEF_ENUM_REFLECTION_PRIMARY(Type, GX::EnumReflectionInfo<Type>)
 
+#define DEF_ENUM_REFLECTION_INFO(Type, Info) \
+	DEF_ENUM_REFLECTION_PRIMARY(Type, Info)
+
 #define DEF_ENUM_REFLECTION_LOCAL(Type) \
 	DEF_ENUM_REFLECTION_INFO_LOCAL(Type, GX::EnumReflectionInfo<Type>)
 

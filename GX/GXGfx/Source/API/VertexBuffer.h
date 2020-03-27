@@ -1,5 +1,8 @@
 #pragma once
 
+// Project Includes
+#include <GXLib/Graphics/PixelFormat.h>
+
 // Stdlib Includes
 #include <string>
 #include <vector>
@@ -17,32 +20,24 @@ namespace GX::Gfx
 	// Types
 	//-----------------------------------------------------------------------------------------------------
 
-	enum class VertexBufferFormat
-	{
-		R32G32Float,
-		R32G32B32Float,
-		R32G32B32A32Float,
-		R32SInt
-	};
-
 	struct VertexBufferLayoutEntry
 	{
-		std::string			semantic;
-		VertexBufferFormat	format;
-		int					size;
+		std::string	semantic;
+		PixelFormat	format;
+		int			size;
 	};
 	
 	struct VertexBufferParameters
 	{
 		std::vector<VertexBufferLayoutEntry> layout;
 		const void*							 data;
-		int									 size;
-		int									 stride;
+		size_t								 size;
+		size_t								 stride;
 		VertexShader*						 shader;
 	};
 
 	//-----------------------------------------------------------------------------------------------------
-	// Vertex Buffer
+	// VertexBuffer
 	//-----------------------------------------------------------------------------------------------------
 
 	class VertexBuffer
@@ -52,6 +47,7 @@ namespace GX::Gfx
 		virtual			~VertexBuffer	() = default;
 
 		// Vertex Buffer Interface
+		virtual void	update			(DeviceContext& device_context, const void* data, size_t size) = 0;
 		virtual void	draw			(DeviceContext& device_context) = 0;
 	};
 }

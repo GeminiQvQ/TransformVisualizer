@@ -251,8 +251,8 @@ namespace TransformVisualizer
 
 		std::vector<GX::Gfx::VertexBufferLayoutEntry> vertex_layout
 		{
-			{ "POSITION", GX::Gfx::VertexBufferFormat::R32G32B32Float, 12 },
-			{ "COLOR_INDEX", GX::Gfx::VertexBufferFormat::R32SInt, 4 }
+			{ "POSITION", GX::PixelFormat::R32G32B32Float, 12 },
+			{ "COLOR_INDEX", GX::PixelFormat::R32SInt, 4 }
 		};
 
 		GX::Gfx::VertexBufferParameters vertex_buffer_parameters_triangle {};

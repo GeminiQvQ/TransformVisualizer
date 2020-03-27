@@ -7,10 +7,12 @@
 #include <GXGfx/API/D3D11/D3D11Device.h>
 #include <GXGfx/API/D3D11/D3D11DeviceContext.h>
 #include <GXGfx/API/D3D11/D3D11RenderTargetBackBuffer.h>
+#include <GXGfx/API/D3D11/D3D11SamplerState.h>
 #include <GXGfx/API/D3D11/D3D11Shader.h>
+#include <GXGfx/API/D3D11/D3D11Texture.h>
 #include <GXGfx/API/D3D11/D3D11VertexBuffer.h>
 #include <GXGfx/API/Viewport.h>
-#include <GXLib/Platform/Window.h>
+#include <GXLib/Application/Window.h>
 #include <GXLib/StdExt/VariantIndex.h>
 
 // Third-Party Includes
@@ -76,6 +78,9 @@ namespace GX::Gfx
 			{
 				auto error = (const char*)error_blob->GetBufferPointer();
 				error;
+
+				int a = 0;
+				++a;
 				// TODO: Use error.
 			}
 
@@ -106,7 +111,7 @@ namespace GX::Gfx
 
 	UPtr<VertexBuffer> D3D11Context::create_vertex_buffer(const VertexBufferParameters& parameters)
 	{
-		return std::make_unique<D3D11VertexBuffer>(parameters, m->device);
+		return GX::Gfx::create_vertex_buffer(parameters, m->device, m->device_context);
 	}
 
 	UPtr<RenderTarget> D3D11Context::create_render_target(const RenderTargetParameters& parameters)
@@ -130,6 +135,16 @@ namespace GX::Gfx
 		return std::make_unique<D3D11BlendState>(parameters, m->device);
 	}
 
+	UPtr<SamplerState> D3D11Context::create_sampler_state(const SamplerStateParameters& parameters)
+	{
+		return GX::Gfx::create_sampler_state(parameters, m->device);
+	}
+
+	UPtr<Texture> D3D11Context::create_texture(const TextureParameters& parameters)
+	{
+		return GX::Gfx::create_texture(parameters, m->device);
+	}
+
 	//-----------------------------------------------------------------------------------------------------
 	// Accessors
 	//-----------------------------------------------------------------------------------------------------
@@ -139,7 +154,17 @@ namespace GX::Gfx
 		return m->device;
 	}
 
+	const Device& D3D11Context::device() const
+	{
+		return m->device;
+	}
+
 	DeviceContext& D3D11Context::device_context()
+	{
+		return m->device_context;
+	}
+
+	const DeviceContext& D3D11Context::device_context() const
 	{
 		return m->device_context;
 	}

@@ -43,6 +43,9 @@ namespace GX
 	Vector3F	operator /	(const Vector3F& lhs, float rhs);
 	Vector3F	operator /	(float lhs, const Vector3F& rhs);
 	Vector3F&	operator /= (Vector3F& lhs, float rhs);
+
+	bool		operator == (const Vector3F& lhs, const Vector3F& rhs);
+	bool		operator != (const Vector3F& lhs, const Vector3F& rhs);
 }
 
 // Inline Includes

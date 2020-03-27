@@ -36,7 +36,7 @@ namespace GX::Gfx
 		: m {std::make_unique<Internal>()}
 	{
 		DXGI_SWAP_CHAIN_DESC swap_chain_desc{};
-		swap_chain_desc.BufferCount = 1;
+		swap_chain_desc.BufferCount = 2;
 		swap_chain_desc.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
 		swap_chain_desc.BufferDesc.Width = 0;
 		swap_chain_desc.BufferDesc.Height = 0;
@@ -49,7 +49,7 @@ namespace GX::Gfx
 			nullptr,
 			D3D_DRIVER_TYPE_HARDWARE,
 			0,
-			0,
+			0, //D3D11_CREATE_DEVICE_DEBUG,
 			nullptr,
 			0,
 			D3D11_SDK_VERSION,
@@ -79,8 +79,7 @@ namespace GX::Gfx
 
 	void D3D11Device::resize_backbuffer(int width, int height)
 	{
-		auto res = m->d3d11_swap_chain->ResizeBuffers(1, width, height, DXGI_FORMAT_UNKNOWN, 0);
-		res;
+		m->d3d11_swap_chain->ResizeBuffers(0, width, height, DXGI_FORMAT_UNKNOWN, 0);
 	}
 
 	//-----------------------------------------------------------------------------------------------------

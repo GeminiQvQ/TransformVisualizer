@@ -2,6 +2,7 @@
 
 // Project Includes
 #include <GXGfx/API/ConstantBuffer.h>
+#include <GXGfx/API.h>
 
 // Stdlib Includes
 #include <memory>
@@ -32,6 +33,6 @@ namespace GX::Gfx
 
 	private:
 		struct Internal;
-		const std::unique_ptr<Internal> m;
+		const UPtr<Internal> m;
 	};
 }

@@ -1,5 +1,8 @@
 #pragma once
 
+// Project Includes
+#include <GXLib/Graphics/PixelFormat.h>
+
 // Forward Declarations
 namespace GX::Gfx
 {
@@ -10,6 +13,10 @@ namespace GX::Gfx
 {
 	struct TextureParameters
 	{
+		size_t		width;
+		size_t		height;
+		PixelFormat format;
+		const void* data;
 	};
 
 	class Texture

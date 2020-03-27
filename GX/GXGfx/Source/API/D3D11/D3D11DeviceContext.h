@@ -27,6 +27,10 @@ namespace GX::Gfx
 		virtual void			set_pixel_shader		(PixelShader& shader) override;
 		virtual void			set_constant_buffer_vs	(ConstantBuffer& buffer) override;
 		virtual void			set_constant_buffer_ps	(ConstantBuffer& buffer) override;
+		virtual void			set_sampler_state_vs	(SamplerState& sampler_state) override;
+		virtual void			set_sampler_state_ps	(SamplerState& sampler_state) override;
+
+		virtual Viewport		viewport				() const override;
 
 		// Accessors
 		ID3D11DeviceContext&	d3d11_device_context	();

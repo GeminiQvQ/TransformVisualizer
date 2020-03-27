@@ -5,6 +5,7 @@
 #include <GXGfx/API/D3D11/D3D11BlendState.h>
 #include <GXGfx/API/D3D11/D3D11ConstantBuffer.h>
 #include <GXGfx/API/D3D11/D3D11RenderTarget.h>
+#include <GXGfx/API/D3D11/D3D11SamplerState.h>
 #include <GXGfx/API/D3D11/D3D11Shader.h>
 #include <GXGfx/API/Viewport.h>
 
@@ -21,6 +22,8 @@ namespace GX::Gfx
 	{
 		ID3D11DeviceContext& d3d11_device_context;
 		D3D11RenderTarget*	 render_target;
+
+		Viewport			 viewport;
 
 		Internal(ID3D11DeviceContext& d3d11_device_context)
 			: d3d11_device_context {d3d11_device_context}
@@ -60,6 +63,7 @@ namespace GX::Gfx
 		d3d11_viewport.Width = viewport.width;
 		d3d11_viewport.Height = viewport.height;
 		m->d3d11_device_context.RSSetViewports(1, &d3d11_viewport);
+		m->viewport = viewport;
 	}
 
 	void D3D11DeviceContext::set_render_target(RenderTarget* render_target)
@@ -95,6 +99,25 @@ namespace GX::Gfx
 	{
 		auto d3d11_buffer = &static_cast<D3D11ConstantBuffer&>(buffer).d3d11_buffer();
 		m->d3d11_device_context.PSSetConstantBuffers(1, 1, &d3d11_buffer);
+	}
+
+	void D3D11DeviceContext::set_sampler_state_vs(SamplerState& sampler_state)
+	{
+		auto d3d11_sampler_state = &static_cast<D3D11SamplerState&>(sampler_state).d3d11_sampler_state();
+		m->d3d11_device_context.VSSetSamplers(0, 1, &d3d11_sampler_state);
+	}
+
+	void D3D11DeviceContext::set_sampler_state_ps(SamplerState& sampler_state)
+	{
+		auto d3d11_sampler_state = &static_cast<D3D11SamplerState&>(sampler_state).d3d11_sampler_state();
+		m->d3d11_device_context.PSSetSamplers(0, 1, &d3d11_sampler_state);
+	}
+
+	//-----------------------------------------------------------------------------------------------------
+
+	Viewport D3D11DeviceContext::viewport() const
+	{
+		return m->viewport;
 	}
 
 	//-----------------------------------------------------------------------------------------------------

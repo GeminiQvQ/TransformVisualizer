@@ -16,10 +16,10 @@ namespace GX
 	void invoke(It first, It end, const Callback& callback, Args... args);
 
 	template <class Container, class Callback, class... Args>
-	void invoke_conditional(const Container& container, const Callback& callback, Args... args);
+	bool invoke_conditional(const Container& container, const Callback& callback, Args... args);
 
 	template <class It, class Callback, class... Args>
-	void invoke_conditional(It first, It end, const Callback& callback, Args... args);
+	bool invoke_conditional(It first, It end, const Callback& callback, Args... args);
 }
 
 // Inline Includes

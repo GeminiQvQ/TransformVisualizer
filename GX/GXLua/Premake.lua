@@ -120,6 +120,14 @@ end
 
 ----------------------------------------------------------------------------------
 
+GX.Premake.dll_output_path = GX.Premake.dll_output_path or nil
+
+function GX.Premake.set_dll_output_dir(path)
+	GX.Premake.dll_output_path = "%{wks.location}" .. path
+end
+
+----------------------------------------------------------------------------------
+
 function GX.Premake.workspace(kinds)
 	local configurations_t = {}
 	for _,c in pairs(GX.Premake.Config) do
@@ -201,6 +209,20 @@ function GX.Premake.project(name, kinds)
 		defines { "NDEBUG" }
 		optimize "Speed"
 	
+
+	filter ("configurations:*" .. GX.Premake.Kind.DLL.Name)
+		defines { name .. "_EXPORT_DLL" }
+
+	if (GX.Premake.dll_output_path ~= nil) then
+		filter ("configurations:*" .. GX.Premake.Kind.DLL.Name)
+			postbuildcommands {
+				"{MKDIR} " .. GX.Premake.dll_output_path,
+				"{COPY} %{cfg.buildtarget.directory}%{cfg.buildtarget.basename}.dll " .. GX.Premake.dll_output_path,
+				"{COPY} %{cfg.buildtarget.directory}%{cfg.buildtarget.basename}.pdb " .. GX.Premake.dll_output_path
+			}
+	end
+
+	--[[
 	filter ("configurations:*" .. GX.Premake.Kind.DLL.Name)
 		defines { name .. "_EXPORT_DLL" }
 		postbuildcommands {
@@ -214,6 +236,7 @@ function GX.Premake.project(name, kinds)
 			"{MKDIR} %{wks.location}DLLOutput",
 			"{COPY} %{wks.location}DLLOutput/* %{cfg.buildtarget.directory}"
 		}
+	]]--
 	
 	filter ("platforms:" .. GX.Premake.Platform.X32)
 		architecture "x32"

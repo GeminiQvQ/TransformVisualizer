@@ -38,6 +38,9 @@ namespace GX
 	Vector4F&	operator -= (Vector4F& lhs, const Vector4F& rhs);
 	Vector4F	operator *	(const Vector4F& lhs, float rhs);
 	Vector4F&	operator *= (Vector4F& lhs, float rhs);
+
+	bool		operator == (const Vector4F& lhs, const Vector4F& rhs);
+	bool		operator != (const Vector4F& lhs, const Vector4F& rhs);
 }
 
 // Inline Includes

@@ -10,6 +10,7 @@ include "../../GX/GXLua/Premake.lua"
 
 workspace "TransformVisualizer"
 	GX.Premake.workspace({GX.Premake.Kind.ExeWinStatic, GX.Premake.Kind.Static, GX.Premake.Kind.ExeWin, GX.Premake.Kind.DLL})
+	GX.Premake.set_dll_output_dir("../../Projects/TransformVisualizer/Bin")
 	
 	startproject "TransformVisualizer"
 

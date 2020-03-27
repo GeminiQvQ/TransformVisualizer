@@ -97,4 +97,16 @@ namespace GX
 		lhs.y *= rhs;
 		return lhs;
 	}
+
+	//-----------------------------------------------------------------------------------------------------
+
+	inline bool operator == (const Vector2F& lhs, const Vector2F& rhs)
+	{
+		return (lhs.x == rhs.x && lhs.y == rhs.y);
+	}
+
+	inline bool operator != (const Vector2F& lhs, const Vector2F& rhs)
+	{
+		return !(lhs == rhs);
+	}
 }
